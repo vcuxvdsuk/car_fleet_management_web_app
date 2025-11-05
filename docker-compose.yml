@@ -1,0 +1,54 @@
+version: "3.8"
+services:
+    mongo:
+        image: mongo:6
+        container_name: vehicle-mongo
+        restart: unless-stopped
+        command: ["--replSet", "rs0", "--bind_ip_all"]
+        ports:
+            - "27017:27017"
+        environment:
+            MONGO_INITDB_DATABASE: vehicle-crud
+        volumes:
+            - mongo-data:/data/db
+        healthcheck:
+            test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongosh --quiet) -eq 1
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        container_name: vehicle-backend
+        restart: unless-stopped
+        ports:
+            - "4000:4000"
+        environment:
+            DATABASE_URL: "mongodb://mongo:27017/vehicle-crud"
+        depends_on:
+            - mongo
+        volumes:
+            - ./backend/src:/app/src
+            - ./backend/prisma:/app/prisma
+        command: sh -c "npx prisma generate && npx ts-node-dev --respawn --transpile-only src/index.ts"
+
+    frontend:
+        build: ./frontend
+        container_name: vehicle-frontend
+        restart: unless-stopped
+        ports:
+            - "5173:5173"
+        environment:
+            - VITE_API_URL=http://localhost:4000
+        depends_on:
+            - backend
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+            - ./tsconfig.base.json:/app/tsconfig.base.json
+        command: npm run dev
+
+volumes:
+    mongo-data:

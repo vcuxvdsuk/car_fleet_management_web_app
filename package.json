@@ -1,0 +1,36 @@
+{
+    "name": "todo-stack-ts",
+    "private": true,
+    "version": "0.1.0",
+    "workspaces": [
+        "frontend",
+        "backend",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev": "concurrently \"npm:dev:backend\" \"npm:dev:frontend\"",
+        "dev:backend": "npm --workspace backend run dev",
+        "dev:frontend": "npm --workspace frontend run dev",
+        "build": "npm --workspace backend run build && npm --workspace frontend run build",
+        "start": "npm --workspace backend run start"
+    },
+    "devDependencies": {
+        "@types/jest": "^30.0.0",
+        "@types/node": "^24.9.2",
+        "@types/supertest": "^6.0.3",
+        "@vitejs/plugin-react": "^5.0.4",
+        "concurrently": "^8.0.1",
+        "jest": "^30.2.0",
+        "mongodb-memory-server": "^10.2.3",
+        "prisma": "^6.18.0",
+        "supertest": "^7.1.4",
+        "ts-jest": "^29.4.5",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.9.3"
+    },
+    "dependencies": {
+        "@prisma/client": "^6.18.0",
+        "axios": "^1.12.2",
+        "git": "^0.1.5"
+    }
+}

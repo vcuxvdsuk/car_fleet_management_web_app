@@ -1,0 +1,14 @@
+[
+    {
+        "licensePlate": "123-45-678",
+        "status": "Available"
+    },
+    {
+        "licensePlate": "987-65-432",
+        "status": "InUse"
+    },
+    {
+        "licensePlate": "555-22-111",
+        "status": "Available"
+    }
+]
